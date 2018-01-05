@@ -1,7 +1,7 @@
 {
   "name": "unix-filter",
   "main": "./lib/main",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "A simple atom package to run a UNIX filter on current text",
   "keywords": [],
   "repository": "https://github.com/lierdakil/atom-unix-filter",
