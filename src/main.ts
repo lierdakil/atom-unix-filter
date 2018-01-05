@@ -59,8 +59,7 @@ export function activate() {
           const shouldRun = atom.config.get('unix-filter.runOnSave', {
             scope: editor.getRootScopeDescriptor(),
           })
-          if (shouldRun) return run(editor)
-          else return
+          if (shouldRun) await run(editor)
         }),
         buf.onDidDestroy(() => {
           subs.remove(disp)
