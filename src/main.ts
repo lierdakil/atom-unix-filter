@@ -1,7 +1,7 @@
 import { CompositeDisposable, TextEditor } from 'atom'
 import * as CP from 'child_process'
 
-let subscriptions: CompositeDisposable
+let subs: CompositeDisposable
 
 export const config = {
   command: {
@@ -15,8 +15,8 @@ export const config = {
 }
 
 export function activate() {
-  subscriptions = new CompositeDisposable()
-  subscriptions.add(
+  subs = new CompositeDisposable()
+  subs.add(
     atom.commands.add('atom-text-editor', {
       'unix-filter:run': ({ currentTarget }) => {
         run(currentTarget.getModel()).catch((e) => {
@@ -53,28 +53,32 @@ export function activate() {
     }),
     atom.workspace.observeTextEditors((editor) => {
       const buf = editor.getBuffer()
-      const disp = buf.onWillSave(async () => {
-        const shouldRun = atom.config.get('unix-filter.runOnSave', {
-          scope: editor.getLastCursor().getScopeDescriptor(),
-        })
-        if (shouldRun) return run(editor)
-        else return
-      })
-      buf.onDidDestroy(() => {
-        subscriptions.remove(disp)
-        disp.dispose()
-      })
+      const disp = new CompositeDisposable()
+      disp.add(
+        buf.onWillSave(async () => {
+          const shouldRun = atom.config.get('unix-filter.runOnSave', {
+            scope: editor.getRootScopeDescriptor(),
+          })
+          if (shouldRun) return run(editor)
+          else return
+        }),
+        buf.onDidDestroy(() => {
+          subs.remove(disp)
+          disp.dispose()
+        }),
+      )
+      subs.add(disp)
     }),
   )
 }
 
 export function deactivate() {
-  subscriptions.dispose()
+  subs.dispose()
 }
 
 async function run(editor: TextEditor) {
   const cmd = atom.config.get('unix-filter.command', {
-    scope: editor.getLastCursor().getScopeDescriptor(),
+    scope: editor.getRootScopeDescriptor(),
   })
   return customCommand(editor, cmd)
 }
