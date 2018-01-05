@@ -23,6 +23,33 @@ export function activate() {
           console.error(e)
         })
       },
+      // TODO: atom-select-list with history
+      'unix-filter:exec': async ({ currentTarget }) => {
+        const textEditorElement = document.createElement('atom-text-editor')
+        textEditorElement.setAttribute('mini', '')
+        const panel = atom.workspace.addModalPanel({
+          item: textEditorElement,
+          visible: true,
+        })
+        textEditorElement.focus()
+        const disp = new CompositeDisposable()
+        const cont = await new Promise((resolve) => {
+          disp.add(
+            atom.commands.add(textEditorElement, {
+              'core:confirm': () => resolve(true),
+              'core:cancel': () => resolve(false),
+            }),
+          )
+        })
+        disp.dispose()
+        panel.destroy()
+        if (cont) {
+          const cmd = textEditorElement.getModel().getText()
+          customCommand(currentTarget.getModel(), cmd).catch((e) => {
+            console.error(e)
+          })
+        }
+      },
     }),
     atom.workspace.observeTextEditors((editor) => {
       const buf = editor.getBuffer()
@@ -46,10 +73,14 @@ export function deactivate() {
 }
 
 async function run(editor: TextEditor) {
-  const text = editor.getText()
   const cmd = atom.config.get('unix-filter.command', {
     scope: editor.getLastCursor().getScopeDescriptor(),
   })
+  return customCommand(editor, cmd)
+}
+
+async function customCommand(editor: TextEditor, cmd: string) {
+  const text = editor.getText()
   return new Promise<void>((resolve) => {
     const proc = CP.exec(cmd, { encoding: 'utf8' }, (error, result) => {
       if (error) {
