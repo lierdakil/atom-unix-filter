@@ -1,0 +1,21 @@
+{
+  "name": "unix-filter",
+  "main": "./lib/main",
+  "version": "0.0.0",
+  "description": "A simple atom package to run a UNIX filter on current text",
+  "keywords": [],
+  "repository": "https://github.com/lierdakil/atom-unix-filter",
+  "license": "MIT",
+  "engines": {
+    "atom": ">=1.23.0 <2.0.0"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@types/atom": "~1.23.1",
+    "@types/node": "^7",
+    "atom-haskell-tslint-rules": "^0.1.1",
+    "prettier": "^1.9.2",
+    "tslint": "^5.8.0",
+    "typescript": "^2.6.2"
+  }
+}
