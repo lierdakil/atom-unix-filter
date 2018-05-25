@@ -12,6 +12,10 @@ export const config = {
     type: 'boolean',
     default: false,
   },
+  replaceText: {
+    type: 'boolean',
+    default: true,
+  },
 }
 
 export function activate() {
@@ -85,7 +89,9 @@ async function run(editor: TextEditor) {
 async function customCommand(editor: TextEditor, cmd: string) {
   const text = editor.getText()
   return new Promise<void>((resolve) => {
-    const proc = CP.exec(cmd, { encoding: 'utf8' }, (error, result) => {
+    const newEnv = Object.assign({}, process.env)
+    newEnv.FILE = editor.getPath()
+    const proc = CP.exec(cmd, { encoding: 'utf8', env: newEnv }, (error, result) => {
       if (error) {
         atom.notifications.addError(error.toString(), {
           detail: error.message,
@@ -97,9 +103,14 @@ async function customCommand(editor: TextEditor, cmd: string) {
         const [first, ...points] = editor
           .getCursors()
           .map((c) => c.getBufferPosition())
-        editor.setText(result.replace(/^ +$/gm, ''))
-        editor.setCursorBufferPosition(first)
-        points.forEach((p) => editor.addCursorAtBufferPosition(p))
+        const replaceText = atom.config.get('unix-filter.replaceText', {
+          scope: editor.getRootScopeDescriptor(),
+        })
+        if (replaceText) {
+          editor.setText(result.replace(/^ +$/gm, ''))
+          editor.setCursorBufferPosition(first)
+          points.forEach((p) => editor.addCursorAtBufferPosition(p))
+        }
         resolve()
       }
     })

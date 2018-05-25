@@ -1,0 +1,6 @@
+# in the repo dir:
+npm install --only=dev
+# Win:
+node_modules\.bin\tsc --project .
+# Unix:
+node_modules/.bin/tsc --project .
