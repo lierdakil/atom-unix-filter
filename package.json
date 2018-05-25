@@ -16,7 +16,12 @@
     "atom": ">=1.23.0 <2.0.0"
   },
   "scripts": {
-    "build": "tsc --project ."
+    "build": "tsc --project .",
+    "prettier": "prettier --write 'src/**/*.ts'",
+    "prettier-check": "prettier -l 'src/**/*.ts'",
+    "typecheck": "tsc --noEmit -p .",
+    "lint": "tslint --project .",
+    "test": "npm run typecheck && npm run lint && npm run prettier-check"
   },
   "dependencies": {},
   "devDependencies": {
