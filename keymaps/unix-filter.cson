@@ -1,2 +1,2 @@
-'atom-workspace atom-text-editor':
+'atom-text-editor':
   'ctrl-alt-f': 'unix-filter:run'

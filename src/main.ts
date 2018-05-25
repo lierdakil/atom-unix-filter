@@ -14,7 +14,7 @@ export const config = {
   },
   replaceText: {
     type: 'boolean',
-    default: false,
+    default: true,
   },
 }
 
