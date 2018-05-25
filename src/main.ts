@@ -14,11 +14,11 @@ export const config = {
   },
   replaceText: {
     type: 'boolean',
-    default: true,
+    default: false,
   },
   appendFileName: {
     type: 'boolean',
-    default: false,
+    default: true,
   },
 }
 
