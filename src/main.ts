@@ -16,6 +16,10 @@ export const config = {
     type: 'boolean',
     default: true,
   },
+  appendFileName: {
+    type: 'boolean',
+    default: false,
+  },
 }
 
 export function activate() {
@@ -89,7 +93,15 @@ async function run(editor: TextEditor) {
 async function customCommand(editor: TextEditor, cmd: string) {
   const text = editor.getText()
   return new Promise<void>((resolve) => {
-    const proc = CP.exec(cmd, { encoding: 'utf8' }, (error, result) => {
+    const appendFileName = atom.config.get('unix-filter.appendFileName', {
+      scope: editor.getRootScopeDescriptor(),
+    })
+    if (appendFileName) {
+      var cmd_plus = cmd + ' "' + editor.getPath() + '"';
+    } else {
+      var cmd_plus = cmd
+    }
+    const proc = CP.exec(cmd_plus, { encoding: 'utf8' }, (error, result) => {
       if (error) {
         atom.notifications.addError(error.toString(), {
           detail: error.message,
