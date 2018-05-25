@@ -1,0 +1,4 @@
+in the repo dir:
+npm install --save-dev typescript
+apm install
+node_modules\.bin\tsc src\main.ts

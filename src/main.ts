@@ -12,6 +12,10 @@ export const config = {
     type: 'boolean',
     default: false,
   },
+  replaceText: {
+    type: 'boolean',
+    default: true,
+  },
 }
 
 export function activate() {
@@ -97,9 +101,14 @@ async function customCommand(editor: TextEditor, cmd: string) {
         const [first, ...points] = editor
           .getCursors()
           .map((c) => c.getBufferPosition())
-        editor.setText(result.replace(/^ +$/gm, ''))
-        editor.setCursorBufferPosition(first)
-        points.forEach((p) => editor.addCursorAtBufferPosition(p))
+        const replaceText = atom.config.get('unix-filter.replaceText', {
+          scope: editor.getRootScopeDescriptor(),
+        })
+        if (replaceText) {
+          editor.setText(result.replace(/^ +$/gm, ''))
+          editor.setCursorBufferPosition(first)
+          points.forEach((p) => editor.addCursorAtBufferPosition(p))
+        }
         resolve()
       }
     })
