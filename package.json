@@ -15,6 +15,9 @@
   "engines": {
     "atom": ">=1.23.0 <2.0.0"
   },
+  "scripts": {
+    "build": "tsc --project ."
+  },
   "dependencies": {},
   "devDependencies": {
     "@types/atom": "~1.23.1",
