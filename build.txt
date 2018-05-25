@@ -1,5 +1,6 @@
 # in the repo dir:
-npm install --save-dev typescript
-apm install
-node_modules\.bin\tsc src\main.ts
-# copy main.ts from src to lib
+npm install --only=dev
+# Win:
+node_modules\.bin\tsc --project .
+# Unix:
+node_modules/.bin/tsc --project .

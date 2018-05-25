@@ -5,7 +5,9 @@
   "description": "A simple atom package to run a UNIX filter on current text",
   "keywords": [],
   "activationCommands": {
-    "atom-workspace": ["unix-filter:run"]
+    "atom-workspace": [
+      "unix-filter:run"
+    ]
   },
   "repository": "https://github.com/lierdakil/atom-unix-filter",
   "license": "MIT",
