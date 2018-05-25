@@ -91,29 +91,33 @@ async function customCommand(editor: TextEditor, cmd: string) {
   return new Promise<void>((resolve) => {
     const newEnv = Object.assign({}, process.env)
     newEnv.FILE = editor.getPath()
-    const proc = CP.exec(cmd, { encoding: 'utf8', env: newEnv }, (error, result) => {
-      if (error) {
-        atom.notifications.addError(error.toString(), {
-          detail: error.message,
-          stack: error.stack,
-          dismissable: true,
-        })
-        resolve() // always save the file!
-      } else {
-        const [first, ...points] = editor
-          .getCursors()
-          .map((c) => c.getBufferPosition())
-        const replaceText = atom.config.get('unix-filter.replaceText', {
-          scope: editor.getRootScopeDescriptor(),
-        })
-        if (replaceText) {
-          editor.setText(result.replace(/^ +$/gm, ''))
-          editor.setCursorBufferPosition(first)
-          points.forEach((p) => editor.addCursorAtBufferPosition(p))
+    const proc = CP.exec(
+      cmd,
+      { encoding: 'utf8', env: newEnv },
+      (error, result) => {
+        if (error) {
+          atom.notifications.addError(error.toString(), {
+            detail: error.message,
+            stack: error.stack,
+            dismissable: true,
+          })
+          resolve() // always save the file!
+        } else {
+          const [first, ...points] = editor
+            .getCursors()
+            .map((c) => c.getBufferPosition())
+          const replaceText = atom.config.get('unix-filter.replaceText', {
+            scope: editor.getRootScopeDescriptor(),
+          })
+          if (replaceText) {
+            editor.setText(result.replace(/^ +$/gm, ''))
+            editor.setCursorBufferPosition(first)
+            points.forEach((p) => editor.addCursorAtBufferPosition(p))
+          }
+          resolve()
         }
-        resolve()
-      }
-    })
+      },
+    )
     proc.stdin.write(text)
     proc.stdin.end()
   })
